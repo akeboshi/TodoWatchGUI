@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>jp.co.ricoh.src.limedio.todowatchgui.MainApp</mainClass>
+        <mainClass>jp.co.gui.aruga.watch.MainApp</mainClass>
     </properties>
 
     <organization>
