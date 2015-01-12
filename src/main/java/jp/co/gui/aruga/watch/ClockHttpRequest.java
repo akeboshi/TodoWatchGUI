@@ -5,13 +5,19 @@
  */
 package jp.co.gui.aruga.watch;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import jp.co.gui.aruga.watch.entity.Todo;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -22,48 +28,35 @@ import org.apache.http.util.EntityUtils;
  * @author akari
  */
 public class ClockHttpRequest {
-    private String host = "example.test";
-    private String port = "";
+    private String host = "localhost:8084";
+    private String dir = "TodoWatch";
+    private String url = "http://" + host + "/" + dir + "";
     private String encode = "UTF-8";
+    private DefaultHttpClient httpClient = new DefaultHttpClient();
 
-    
-    public void post(String path) throws IOException {
-        // TODO Auto-generated method stub
-
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-
-        HttpPost request = new HttpPost("http://example.test:9000/post");
-
-        String strJson = "";
+    public List<Todo> get() throws IOException{
+        HttpGet request = new HttpGet(url + "/json");
         
-        path = "/path/to/test.json";
-        BufferedReader br = new BufferedReader(new FileReader(new File(path)));
-        String str;
-        while ((str = br.readLine()) != null) {
-            strJson += str;
-        }
-        System.out.println(strJson);
-
-        StringEntity body = new StringEntity(strJson);
+        HttpResponse hr = httpClient.execute(request);
+        String result = EntityUtils.toString(hr.getEntity());
+        System.out.println(result);
+        ObjectMapper om = new ObjectMapper();
+        List<Todo> todo = om.readValue(result, new TypeReference<List<Todo>>() {});
+        return todo;
+    }
+    
+    public void delete(String id) throws IOException{
+    }
+    
+    public boolean login(String user, String passwd) throws IOException {
+        HttpPost request = new HttpPost(url + "/stlogin");
+        
+        StringEntity body = new StringEntity("{\"user\":\""+ user +"\",\"passwd\":\""+ passwd +"\"}");
         request.addHeader("Content-type", "application/json");
         request.setEntity(body);
+        HttpResponse hr = httpClient.execute(request);
 
-        String result = httpClient.execute(request, new ResponseHandler<String>() {
-            public String handleResponse(HttpResponse response) throws IOException {
-                switch (response.getStatusLine().getStatusCode()) {
-                    case HttpStatus.SC_OK:
-                        System.out.println(HttpStatus.SC_OK);
-                        return EntityUtils.toString(response.getEntity(), encode);
-                    case HttpStatus.SC_NOT_FOUND:
-                        System.out.println(HttpStatus.SC_NOT_FOUND);
-                        return "404";
-                    default:
-                        System.out.println("unknown");
-                        return "unknown";
-                }
-            }
-        });
-        System.out.println(result);
-        httpClient.getConnectionManager().shutdown();
+        String result = EntityUtils.toString(hr.getEntity());
+        return result.equals("1");
     }
 }

@@ -66,6 +66,14 @@ public class FXMLController implements Initializable {
         System.out.println("You clicked me!");
         clockTabPane.getTabs().add(getTab("new"));
         
+        try {
+            ClockHttpRequest chr =new ClockHttpRequest();
+            chr.login("a", "b");
+            chr.get();
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         Tab t = clockTabPane.getTabs().get(1);
         AnchorPane ap = (AnchorPane)t.getContent();
         TableView<TableTodo> to = (TableView<TableTodo>)ap.getChildren().get(0);
@@ -73,7 +81,7 @@ public class FXMLController implements Initializable {
         to.getItems().add(new TableTodo("oho" + i, "unko" + i));
         TableView.TableViewSelectionModel<TableTodo>  sm = to.getSelectionModel();
         to.getItems().remove(sm.getSelectedItem());
-        label.setText("Hello World!");
+        
     }
     
     @FXML
