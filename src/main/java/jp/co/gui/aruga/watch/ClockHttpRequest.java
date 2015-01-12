@@ -7,18 +7,19 @@ package jp.co.gui.aruga.watch;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import jp.co.gui.aruga.watch.entity.Category;
 import jp.co.gui.aruga.watch.entity.Todo;
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ResponseHandler;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -28,24 +29,68 @@ import org.apache.http.util.EntityUtils;
  * @author akari
  */
 public class ClockHttpRequest {
-    private String host = "localhost:8084";
-    private String dir = "TodoWatch";
-    private String url = "http://" + host + "/" + dir + "";
-    private String encode = "UTF-8";
-    private DefaultHttpClient httpClient = new DefaultHttpClient();
+    final private String host = "localhost:8084";
+    final private String dir = "TodoWatch";
+    final private String url = "http://" + host + "/" + dir + "";
+    final private String encode = "UTF-8";
+    final private DefaultHttpClient httpClient = new DefaultHttpClient();
+    final private ObjectMapper om = new ObjectMapper();
 
-    public List<Todo> get() throws IOException{
-        HttpGet request = new HttpGet(url + "/json");
+    public List<Todo> get(String category) throws IOException{
+        String jsonUrl = url + "/json";
+        if (category != null)
+            jsonUrl = jsonUrl+ "?category=" + category;
+        HttpGet request = new HttpGet(jsonUrl);
         
         HttpResponse hr = httpClient.execute(request);
         String result = EntityUtils.toString(hr.getEntity());
-        System.out.println(result);
-        ObjectMapper om = new ObjectMapper();
         List<Todo> todo = om.readValue(result, new TypeReference<List<Todo>>() {});
         return todo;
     }
     
     public void delete(String id) throws IOException{
+        HttpDelete request = new HttpDelete(url + "/json/" + id);
+        
+        HttpResponse hr = httpClient.execute(request);
+        if (hr.getStatusLine().getStatusCode() < 400  )
+            throw new UnsupportedOperationException();
+    }
+    
+    public Todo create(Todo todo) throws IOException {
+        HttpPost request = new HttpPost(url + "/json");
+        
+        String json = om.writeValueAsString(todo);
+        StringEntity se = new StringEntity(json);
+        request.addHeader("Content-type", "application/json");
+        request.setEntity(se);
+        HttpResponse hr = httpClient.execute(request);
+        
+        String result = EntityUtils.toString(hr.getEntity());
+        Todo tResult = om.readValue(result, Todo.class);
+        
+        return tResult;
+    }
+    
+    public void update(Todo todo) throws IOException {
+        if (todo.getId() == null)
+            throw new UnsupportedOperationException();
+        
+        HttpPut request = new HttpPut(url + "/json" + todo.getId());
+        
+        String json = om.writeValueAsString(todo);
+        StringEntity se = new StringEntity(json);
+        request.addHeader("Content-type", "application/json");
+        request.setEntity(se);
+        HttpResponse hr = httpClient.execute(request);
+    }
+    
+    public List<Category> getCategory() throws IOException{
+        HttpGet request = new HttpGet(url + "/category");
+        
+        HttpResponse hr = httpClient.execute(request);
+        String result = EntityUtils.toString(hr.getEntity());
+        List<Category> cat = om.readValue(result, new TypeReference<List<Category>>() {});
+        return cat;
     }
     
     public boolean login(String user, String passwd) throws IOException {

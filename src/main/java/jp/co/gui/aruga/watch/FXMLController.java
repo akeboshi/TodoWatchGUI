@@ -69,7 +69,7 @@ public class FXMLController implements Initializable {
         try {
             ClockHttpRequest chr =new ClockHttpRequest();
             chr.login("a", "b");
-            chr.get();
+            chr.get(null);
         } catch (IOException ex) {
             Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
         }
