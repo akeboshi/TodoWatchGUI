@@ -18,16 +18,18 @@ Label label;
     Button button;
     @Override
     public void start(Stage stage) throws Exception {
-       /* Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
-                
+       
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
         
         stage.setTitle("JavaFX and Maven");
+        stage.setResizable(false);
         stage.setScene(scene);
-        stage.show();*/
-        label = new Label("This is JavaFX!");
+        stage.show();
+       /*
+       label = new Label("This is JavaFX!");
         field = new TextField("test");
         button = new Button("Click");
         button.setOnAction((ActionEvent)-> {
@@ -41,6 +43,7 @@ Label label;
         Scene scene = new Scene(pane, 320, 120);
         stage.setScene(scene);
         stage.show();
+        */
     }
 
     /**
