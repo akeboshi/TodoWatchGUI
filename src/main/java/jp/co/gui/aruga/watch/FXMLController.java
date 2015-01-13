@@ -35,10 +35,6 @@ import jp.co.gui.aruga.watch.entity.TableTodo;
 import jp.co.gui.aruga.watch.entity.Todo;
 
 public class FXMLController implements Initializable {
-
-    @FXML
-    private Label label;
-
     @FXML
     private TabPane clockTabPane;
     
@@ -235,11 +231,6 @@ public class FXMLController implements Initializable {
         AnchorPane ap = (AnchorPane) tab.getContent();
         TableView<TableTodo> to = (TableView<TableTodo>) ap.getChildren().get(0);
         to.getItems().add(tt);
-    }
-
-    private List<Todo> getTodo() {
-
-        return null;
     }
 
 }
