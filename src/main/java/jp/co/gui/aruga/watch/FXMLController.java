@@ -2,6 +2,8 @@ package jp.co.gui.aruga.watch;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +16,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -50,6 +55,15 @@ public class FXMLController implements Initializable {
     private TableColumn<TableTodo, String> descriptionColumn;
 
     @FXML
+   private TextField titleText;
+    @FXML
+    private TextArea descriptionText;
+    @FXML
+    private DatePicker deadlinePicker;
+    @FXML
+    private AnchorPane createTodoPane;
+
+    @FXML
     private Label date;
     @FXML
     private Label hour;
@@ -65,22 +79,49 @@ public class FXMLController implements Initializable {
     ClockHttpRequest httpRequest = new ClockHttpRequest();
 
     Map<Tab, String> tabMap = new HashMap<>();
-
-    int i = 0;
-
+    
     @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        clockTabPane.getTabs().add(getTab("new"));
-
-        Tab t = clockTabPane.getTabs().get(1);
+    private void handleCreateTodoButton(ActionEvent event) {
+        createTodoPane.setVisible(true);
+    }
+    @FXML
+    private void handleDeleteTodoButton (ActionEvent event) throws IOException {
+        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
+        Tab t = clockTabPane.getTabs().get(tabNum);
         AnchorPane ap = (AnchorPane) t.getContent();
         TableView<TableTodo> to = (TableView<TableTodo>) ap.getChildren().get(0);
-        i++;
-        to.getItems().add(new TableTodo("aha","oho" + i, "unko" + i));
-        TableView.TableViewSelectionModel<TableTodo> sm = to.getSelectionModel();
-        to.getItems().remove(sm.getSelectedItem());
-
+        int viewNum = to.getSelectionModel().getSelectedIndex();
+        TableTodo tt = to.getItems().get(viewNum);
+        httpRequest.delete(tt.getId());
+        to.getItems().remove(viewNum);
+    }
+    
+    @FXML
+    private void handleCreateRequest(ActionEvent event) throws IOException {
+        createTodoPane.setVisible(false);
+        String title = titleText.getText();
+        String description = descriptionText.getText();
+        Date deadline = new Date(deadlinePicker.getValue().toEpochDay());
+        Todo todo = new Todo();
+        todo.setTitle(title);
+        todo.setDeadline(deadline);
+        todo.setDescription(description);
+        httpRequest.create(todo);
+        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
+        Tab t = clockTabPane.getTabs().get(tabNum);
+        setTabContents(t, todo);
+        
+        titleText.setText("");
+        descriptionText.setText("");
+        deadlinePicker.setValue(null);
+    }
+    
+    @FXML
+    private void handleTodoCancel(ActionEvent event) {
+        createTodoPane.setVisible(false);
+        titleText.setText("");
+        descriptionText.setText("");
+        deadlinePicker.setValue(null);
     }
 
     @FXML
@@ -95,8 +136,12 @@ public class FXMLController implements Initializable {
     }
 
     @FXML
-    private void handleCategoryCreate(ActionEvent event) {
-        clockTabPane.getTabs().add(getTab(categoryText.getText()));
+    private void handleCategoryCreate(ActionEvent event) throws IOException {
+        String ct = categoryText.getText();
+        Category ca = httpRequest.createCategory(ct);
+        Tab t = getTab(categoryText.getText());
+        tabMap.put(t, ca.getId());
+        clockTabPane.getTabs().add(t);
         categoryPane.setVisible(false);
         categoryText.setText("");
     }
@@ -139,7 +184,7 @@ public class FXMLController implements Initializable {
                     List<Todo> catTodos = httpRequest.get(category.getId());
                     AnchorPane ap = (AnchorPane) t.getContent();
                     for (Todo cTodo : catTodos) {
-                        setTabContents(t, cTodo, category.getBody());
+                        setTabContents(t, cTodo);
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);
@@ -168,7 +213,7 @@ public class FXMLController implements Initializable {
         return t;
     }
 
-    private void setTabContents(Tab tab, Todo todo, String tabTitle) {
+    private void setTabContents(Tab tab, Todo todo) {
         ObservableList<Tab> ol = clockTabPane.getTabs();
 
         TableTodo tt = new TableTodo(todo.getId(), todo.getTitle(), todo.getDescription());

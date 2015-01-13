@@ -16,6 +16,7 @@ import jp.co.gui.aruga.watch.entity.Category;
 import jp.co.gui.aruga.watch.entity.Todo;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -52,7 +53,7 @@ public class ClockHttpRequest {
         HttpDelete request = new HttpDelete(url + "/json/" + id);
         
         HttpResponse hr = httpClient.execute(request);
-        if (hr.getStatusLine().getStatusCode() < 400  )
+        if (hr.getStatusLine().getStatusCode() >= 400  )
             throw new UnsupportedOperationException();
     }
     
@@ -60,7 +61,7 @@ public class ClockHttpRequest {
         HttpPost request = new HttpPost(url + "/json");
         
         String json = om.writeValueAsString(todo);
-        StringEntity se = new StringEntity(json);
+        StringEntity se = new StringEntity(json,encode);
         request.addHeader("Content-type", "application/json");
         request.setEntity(se);
         HttpResponse hr = httpClient.execute(request);
@@ -91,6 +92,25 @@ public class ClockHttpRequest {
         String result = EntityUtils.toString(hr.getEntity());
         List<Category> cat = om.readValue(result, new TypeReference<List<Category>>() {});
         return cat;
+    }
+    
+    public Category createCategory(String body) throws IOException {
+        HttpPost request = new HttpPost(url + "/category");
+        
+        Category ca = new Category();
+        ca.setBody(body);
+        String json = om.writeValueAsString(ca);
+        StringEntity se = new StringEntity(json, encode);
+        request.addHeader("Content-type", "application/json");
+
+
+        request.setEntity(se);
+        HttpResponse hr = httpClient.execute(request);
+        
+        String result = EntityUtils.toString(hr.getEntity());
+        Category cResult = om.readValue(result, Category.class);
+        
+        return cResult;
     }
     
     public boolean login(String user, String passwd) throws IOException {

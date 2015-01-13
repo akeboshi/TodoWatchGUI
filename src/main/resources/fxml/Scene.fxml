@@ -7,11 +7,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="317.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jp.co.gui.aruga.watch.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="374.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jp.co.gui.aruga.watch.FXMLController">
     <children>
-        <Button fx:id="button" layoutX="411.0" layoutY="92.0" onAction="#handleButtonAction" text="Click Me!" />
         <Label fx:id="label" layoutX="168.0" layoutY="74.0" minHeight="16" minWidth="56.0" prefHeight="36.0" prefWidth="95.0" />
-      <TabPane fx:id="clockTabPane" layoutY="120.0" prefHeight="261.0" prefWidth="487.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="clockTabPane" layoutY="120.0" prefHeight="222.0" prefWidth="487.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="todoTab" text="すべて">
             <content>
@@ -23,28 +22,6 @@
                             <TableColumn id="1" fx:id="descriptionColumn" prefWidth="372.0" text="Description" />
                           </columns>
                         </TableView>
-                        <Button layoutX="30.0" layoutY="188.0" mnemonicParsing="false" text="作成" />
-                        <Button layoutX="96.0" layoutY="188.0" mnemonicParsing="false" text="削除" />
-                        <Button layoutX="348.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleCategoryButton" text="カテゴリ作成" />
-                        <AnchorPane fx:id="categoryPane" layoutX="244.0" layoutY="99.0" prefHeight="115.0" prefWidth="200.0" style="-fx-background-color: white;" visible="false">
-                           <children>
-                              <TextField fx:id="categoryText" layoutX="25.0" layoutY="32.0" />
-                              <Button layoutX="25.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCreate" text="作成" />
-                              <Button layoutX="93.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCancel" text="キャンセル" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="30.0" layoutY="14.0" prefHeight="200.0" prefWidth="415.0" style="-fx-background-color: yellow;" visible="false">
-                           <children>
-                              <Text layoutX="29.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="タイトル" />
-                              <TextField layoutX="96.0" layoutY="17.0" />
-                              <Text layoutX="29.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="詳細" />
-                              <TextArea layoutX="29.0" layoutY="89.0" prefHeight="79.0" prefWidth="377.0" />
-                              <Text layoutX="29.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="期限" />
-                              <DatePicker layoutX="96.0" layoutY="47.0" />
-                              <Button layoutX="73.0" layoutY="173.0" mnemonicParsing="false" text="作成" />
-                              <Button layoutX="244.0" layoutY="173.0" mnemonicParsing="false" text="キャンセル" />
-                           </children>
-                        </AnchorPane>
                      </children>
                   </AnchorPane>
             </content>
@@ -72,5 +49,28 @@
             <Font size="19.0" />
          </font>
       </Label>
+      <Button layoutX="104.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleDeleteTodoButton" text="削除" />
+      <Button layoutX="34.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCreateTodoButton" text="作成" />
+      <Button layoutX="336.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCategoryButton" text="カテゴリ作成" />
+      <AnchorPane fx:id="createTodoPane" layoutX="34.0" layoutY="168.0" prefHeight="200.0" prefWidth="415.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
+         <children>
+            <Text layoutX="29.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="タイトル" />
+            <TextField fx:id="titleText" layoutX="96.0" layoutY="17.0" />
+            <Text layoutX="29.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="詳細" />
+            <TextArea fx:id="descriptionText" layoutX="29.0" layoutY="89.0" prefHeight="79.0" prefWidth="377.0" />
+            <Text layoutX="29.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="期限" />
+            <DatePicker fx:id="deadlinePicker" layoutX="96.0" layoutY="47.0" />
+            <Button fx:id="todoCreateButton" layoutX="73.0" layoutY="173.0" mnemonicParsing="false" onAction="#handleCreateRequest" text="作成" />
+            <Button fx:id="todoCancelButton" layoutX="244.0" layoutY="173.0" mnemonicParsing="false" onAction="#handleTodoCancel" text="キャンセル" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="categoryPane" layoutX="236.0" layoutY="253.0" prefHeight="115.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: black;" visible="false">
+         <children>
+            <TextField fx:id="categoryText" layoutX="25.0" layoutY="32.0" />
+            <Button layoutX="25.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCreate" text="作成" />
+            <Button layoutX="93.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCancel" text="キャンセル" />
+            <Label layoutX="25.0" layoutY="14.0" text="カテゴリ名" />
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>
