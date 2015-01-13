@@ -9,10 +9,10 @@ import java.util.Date;
 
 /**
  *
- * @author akari
+ * @author 灯
  */
-public class Todo {
-    // ID
+public class TodoResponse {
+        // ID
     private String id;
     // タイトル
     private String title;
@@ -21,7 +21,7 @@ public class Todo {
     // 優先度
     private Integer level;
     // category
-    private String category;
+    private Category category;
     // 状態
     private Integer status;
     // 締め切り
@@ -61,14 +61,14 @@ public class Todo {
     /**
      * @return the categoryId
      */
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
     /**
      * @param category the category to set
      */
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -140,5 +140,19 @@ public class Todo {
      */
     public void setCreated(Date created) {
         this.created = created;
+    }
+    
+    public Todo getTodo(){
+        Todo todo = new Todo();
+        if (category != null)
+            todo.setCategory(category.getId());
+        todo.setCreated(created);
+        todo.setDeadline(deadline);
+        todo.setDescription(description);
+        todo.setId(id);
+        todo.setLevel(level);
+        todo.setStatus(status);
+        todo.setTitle(title);
+        return todo;
     }
 }

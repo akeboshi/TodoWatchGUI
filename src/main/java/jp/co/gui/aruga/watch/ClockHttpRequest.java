@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import jp.co.gui.aruga.watch.entity.Category;
 import jp.co.gui.aruga.watch.entity.Todo;
+import jp.co.gui.aruga.watch.entity.TodoResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -45,8 +46,12 @@ public class ClockHttpRequest {
         
         HttpResponse hr = httpClient.execute(request);
         String result = EntityUtils.toString(hr.getEntity());
-        List<Todo> todo = om.readValue(result, new TypeReference<List<Todo>>() {});
-        return todo;
+        List<TodoResponse> todo = om.readValue(result, new TypeReference<List<TodoResponse>>() {});
+        List<Todo> listT = new ArrayList<>();
+        for (TodoResponse todo1 : todo) {
+              listT.add(todo1.getTodo());
+        }
+        return listT;
     }
     
     public void delete(String id) throws IOException{
@@ -67,9 +72,9 @@ public class ClockHttpRequest {
         HttpResponse hr = httpClient.execute(request);
         
         String result = EntityUtils.toString(hr.getEntity());
-        Todo tResult = om.readValue(result, Todo.class);
+        TodoResponse tResult = om.readValue(result, TodoResponse.class);
         
-        return tResult;
+        return tResult.getTodo();
     }
     
     public void update(Todo todo) throws IOException {

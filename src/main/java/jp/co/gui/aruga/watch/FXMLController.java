@@ -38,6 +38,10 @@ public class FXMLController implements Initializable {
 
     @FXML
     private TabPane clockTabPane;
+    
+    // すべて　のTab
+    @FXML
+    private Tab todoTab;
 
     @FXML
     private AnchorPane todoPane;
@@ -101,15 +105,21 @@ public class FXMLController implements Initializable {
         createTodoPane.setVisible(false);
         String title = titleText.getText();
         String description = descriptionText.getText();
-        Date deadline = new Date(deadlinePicker.getValue().toEpochDay());
+        Date deadline = null;
+        if (deadlinePicker.getValue() != null)
+            deadline = new Date(deadlinePicker.getValue().toEpochDay());
+        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
+        Tab t = clockTabPane.getTabs().get(tabNum);
+        String categoryId = tabMap.get(t);
+        AnchorPane ap = (AnchorPane) t.getContent();
         Todo todo = new Todo();
+        todo.setCategory(categoryId);
         todo.setTitle(title);
         todo.setDeadline(deadline);
         todo.setDescription(description);
         httpRequest.create(todo);
-        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
-        Tab t = clockTabPane.getTabs().get(tabNum);
         setTabContents(t, todo);
+        setTabContents(todoTab, todo);
         
         titleText.setText("");
         descriptionText.setText("");
@@ -179,7 +189,7 @@ public class FXMLController implements Initializable {
             for (Category category : categories) {
                 try {
                     Tab t = getTab(category.getBody());
-                    tabMap.put(t, category.getBody());
+                    tabMap.put(t, category.getId());
                     clockTabPane.getTabs().add(t);
                     List<Todo> catTodos = httpRequest.get(category.getId());
                     AnchorPane ap = (AnchorPane) t.getContent();
