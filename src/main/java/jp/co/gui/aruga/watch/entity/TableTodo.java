@@ -20,7 +20,8 @@ public class TableTodo {
     public TableTodo (){
     }
     
-    public TableTodo (String title, String description){
+    public TableTodo (String id, String title, String description){
+        setId(id);
         setTitle(title);
         setDescription(description);
     }
@@ -51,6 +52,20 @@ public class TableTodo {
      */
     public void setDescription(String description) {
         this.description = new SimpleStringProperty(description);
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

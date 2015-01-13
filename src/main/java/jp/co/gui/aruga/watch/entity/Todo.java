@@ -12,8 +12,10 @@ package jp.co.gui.aruga.watch.entity;
 public class Todo {
             // ID
     private String id;
-    // 本文
-    private String body;
+    // タイトル
+    private String title;
+    // 詳細
+    private String description;
     // 優先度
     private Integer level;
     // category
@@ -35,20 +37,6 @@ public class Todo {
         this.id = id;
     }
 
-
-    /**
-     * @return the body
-     */
-    public String getBody() {
-        return body;
-    }
-
-    /**
-     * @param body the body to set
-     */
-    public void setBody(String body) {
-        this.body = body;
-    }
 
     /**
      * @return the level
@@ -90,5 +78,33 @@ public class Todo {
      */
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
