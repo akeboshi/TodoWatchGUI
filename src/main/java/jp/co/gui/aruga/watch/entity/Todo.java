@@ -5,12 +5,14 @@
  */
 package jp.co.gui.aruga.watch.entity;
 
+import java.util.Date;
+
 /**
  *
  * @author akari
  */
 public class Todo {
-            // ID
+    // ID
     private String id;
     // タイトル
     private String title;
@@ -22,6 +24,10 @@ public class Todo {
     private Category category;
     // 状態
     private Integer status;
+    // 締め切り
+    private Date deadline;
+    // 作成日
+    private Date created;
 
     /**
      * @return the id
@@ -106,5 +112,33 @@ public class Todo {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the deadline
+     */
+    public Date getDeadline() {
+        return deadline;
+    }
+
+    /**
+     * @param deadline the deadline to set
+     */
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
+
+    /**
+     * @return the created
+     */
+    public Date getCreated() {
+        return created;
+    }
+
+    /**
+     * @param created the created to set
+     */
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }
