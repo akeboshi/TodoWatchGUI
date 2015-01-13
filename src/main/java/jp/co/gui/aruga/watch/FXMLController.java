@@ -3,6 +3,9 @@ package jp.co.gui.aruga.watch;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,8 +109,10 @@ public class FXMLController implements Initializable {
         String title = titleText.getText();
         String description = descriptionText.getText();
         Date deadline = null;
-        if (deadlinePicker.getValue() != null)
-            deadline = new Date(deadlinePicker.getValue().toEpochDay());
+        if (deadlinePicker.getValue() != null){
+            LocalDate ldt = deadlinePicker.getValue();
+            deadline = new Date(ldt.getYear() - 1900, ldt.getMonthValue() - 1, ldt.getDayOfMonth());
+        }
         int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
         Tab t = clockTabPane.getTabs().get(tabNum);
         String categoryId = tabMap.get(t);
