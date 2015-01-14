@@ -72,7 +72,7 @@
             <Label layoutX="25.0" layoutY="14.0" text="カテゴリ名" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="updateTodoPane" layoutX="29.0" layoutY="36.0" prefHeight="333.0" prefWidth="426.0" style="-fx-border-color: black; -fx-background-color: white;">
+      <AnchorPane fx:id="updateTodoPane" layoutX="29.0" layoutY="36.0" prefHeight="333.0" prefWidth="426.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
          <children>
             <Text layoutX="29.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="タイトル" />
             <TextField fx:id="updateTitleText" layoutX="96.0" layoutY="63.0" />
