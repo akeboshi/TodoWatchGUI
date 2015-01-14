@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -32,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import jp.co.gui.aruga.watch.entity.Category;
 import jp.co.gui.aruga.watch.entity.TableTodo;
 import jp.co.gui.aruga.watch.entity.Todo;
@@ -80,17 +82,35 @@ public class FXMLController implements Initializable {
     private Label dot2;
     @FXML
     private TextField categoryText;
-
+    
+    // 更新系
+    @FXML
+    private AnchorPane updateTodoPane;    
+    @FXML
+    private TextField updateTitleText;
+    @FXML
+    private DatePicker updateDeadlinePicker;
+    @FXML
+    private ChoiceBox<String> updateCategoryChoice;
+    @FXML
+    private ChoiceBox<String> updateStatusChoice;
+    @FXML
+    private TextArea updateDescriptionText;
+    @FXML
+    private Text updateCreatedLabel;
+    
     ClockHttpRequest httpRequest = new ClockHttpRequest();
 
-    Map<Tab, String> tabMap = new HashMap<>();
+    Map<Tab, Category> tabMap = new HashMap<>();
     
     @FXML
     private void handleUpdateRequest(ActionEvent event) {
+        updateTodoPane.setVisible(false);
     }
     
     @FXML
     private void handleUpdateCancel(ActionEvent event) {
+        updateTodoPane.setVisible(false);
     }
     
     @FXML
@@ -103,6 +123,7 @@ public class FXMLController implements Initializable {
          if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
            // ダブルクリック
              System.out.println("double");
+             updateTodoPane.setVisible(true);
              TableTodo tt = getSelectedTableTodo();
         }
         else if (event.getButton().equals(MouseButton.PRIMARY)  && event.getClickCount() == 1) {
@@ -136,7 +157,7 @@ public class FXMLController implements Initializable {
             deadline = new Date(ldt.getYear() - 1900, ldt.getMonthValue() - 1, ldt.getDayOfMonth());
         }
         Tab t = getSelectedTab();
-        String categoryId = tabMap.get(t);
+        String categoryId = tabMap.get(t).getId();
         Todo todo = new Todo();
         todo.setCategory(categoryId);
         todo.setTitle(title);
@@ -175,7 +196,7 @@ public class FXMLController implements Initializable {
         String ct = categoryText.getText();
         Category ca = httpRequest.createCategory(ct);
         Tab t = getTab(categoryText.getText());
-        tabMap.put(t, ca.getId());
+        tabMap.put(t, ca);
         clockTabPane.getTabs().add(t);
         categoryPane.setVisible(false);
         categoryText.setText("");
@@ -211,7 +232,7 @@ public class FXMLController implements Initializable {
             for (Category category : categories) {
                 try {
                     Tab t = getTab(category.getBody());
-                    tabMap.put(t, category.getId());
+                    tabMap.put(t, category);
                     clockTabPane.getTabs().add(t);
                     List<Todo> catTodos = httpRequest.get(category.getId());
                     AnchorPane ap = (AnchorPane) t.getContent();
