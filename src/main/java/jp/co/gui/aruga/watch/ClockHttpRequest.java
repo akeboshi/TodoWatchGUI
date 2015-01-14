@@ -77,17 +77,23 @@ public class ClockHttpRequest {
         return tResult.getTodo();
     }
     
-    public void update(Todo todo) throws IOException {
+    public boolean update(Todo todo) throws IOException {
         if (todo.getId() == null)
             throw new UnsupportedOperationException();
         
-        HttpPut request = new HttpPut(url + "/json" + todo.getId());
+        HttpPut request = new HttpPut(url + "/json/" + todo.getId());
         
         String json = om.writeValueAsString(todo);
-        StringEntity se = new StringEntity(json);
+        StringEntity se = new StringEntity(json,encode);
         request.addHeader("Content-type", "application/json");
         request.setEntity(se);
         HttpResponse hr = httpClient.execute(request);
+        String a = EntityUtils.toString(hr.getEntity());
+        if (a != null && hr.getStatusLine().getStatusCode() < 400){
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public List<Category> getCategory() throws IOException{

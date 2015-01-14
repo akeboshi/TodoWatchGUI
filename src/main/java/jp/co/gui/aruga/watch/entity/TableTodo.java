@@ -56,6 +56,10 @@ public class TableTodo {
     public StringProperty titleProperty() {
         return title;
     }
+    
+    public String getTitle() {
+        return title.getValue();
+    }
 
     /**
      * @param title the title to set
@@ -69,6 +73,10 @@ public class TableTodo {
      */
     public StringProperty descriptionProperty() {
         return description;
+    }
+    
+    public String getDescrption() {
+        return description.getValue();
     }
 
     /**

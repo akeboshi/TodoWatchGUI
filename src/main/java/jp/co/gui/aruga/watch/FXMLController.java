@@ -2,10 +2,13 @@ package jp.co.gui.aruga.watch;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -91,20 +95,53 @@ public class FXMLController implements Initializable {
     @FXML
     private DatePicker updateDeadlinePicker;
     @FXML
-    private ChoiceBox<String> updateCategoryChoice;
+    private ChoiceBox<Category> updateCategoryChoice;
     @FXML
     private ChoiceBox<String> updateStatusChoice;
     @FXML
     private TextArea updateDescriptionText;
     @FXML
     private Text updateCreatedLabel;
-    
+  
     ClockHttpRequest httpRequest = new ClockHttpRequest();
 
     Map<Tab, Category> tabMap = new HashMap<>();
     
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy'年'MM'月'dd'日'");
+    
     @FXML
-    private void handleUpdateRequest(ActionEvent event) {
+    private void handleUpdateRequest(ActionEvent event) throws IOException {
+        Todo todo = new Todo();
+        todo.setTitle(updateTitleText.getText());
+        Date deadline = null;
+        if (deadlinePicker.getValue() != null){
+            LocalDate ldt = deadlinePicker.getValue();
+            deadline = new Date(ldt.getYear() - 1900, ldt.getMonthValue() - 1, ldt.getDayOfMonth());
+        }
+        todo.setDeadline(deadline);
+        todo.setDescription(updateDescriptionText.getText());
+        
+        TableTodo tt = getSelectedTableTodo();
+        todo.setId(tt.getId());
+        todo.setLevel(updateStatusChoice.getSelectionModel().getSelectedIndex());
+        Category selectedCategory = updateCategoryChoice.getSelectionModel().getSelectedItem();
+        if (selectedCategory != null)
+            todo.setCategory(selectedCategory.getId());
+ /*       
+        if ( tt.getCategory() == null && selectedCategory != null){
+            
+        }
+        
+        if ( selectedCategory == null && tt.getCategory() != null){
+        }
+        
+        if ( ! tt.getCategory().equals(selectedCategory.getId()) ){
+            
+        }
+*/        
+        boolean succ = httpRequest.update(todo);
+        todo.setCreated(tt.getCreated());
+        setSelectedTableTodo(new TableTodo(todo));
         updateTodoPane.setVisible(false);
     }
     
@@ -122,9 +159,34 @@ public class FXMLController implements Initializable {
     private void todoViewClicked (MouseEvent event){
          if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
            // ダブルクリック
-             System.out.println("double");
-             updateTodoPane.setVisible(true);
              TableTodo tt = getSelectedTableTodo();
+             updateTitleText.setText("");
+             if (updateTitleText.getText() != null)
+                 updateTitleText.setText(tt.getTitle());
+             Date dl = tt.getDeadline();
+             updateDeadlinePicker.setValue(null);
+             if (dl != null)
+                 updateDeadlinePicker.setValue(LocalDate.of(dl.getYear() + 1900, dl.getMonth() + 1, dl.getDate()));
+             Collection<Category> catList = tabMap.values();
+             updateCategoryChoice.getItems().clear();
+             Category selectedCat = null;
+             for (Category cat : catList) {
+                 updateCategoryChoice.getItems().add(cat);
+                 if (cat.getId().equals(tt.getCategory()))
+                     selectedCat = cat;
+             }
+             
+             updateCategoryChoice.getSelectionModel().select(selectedCat);
+             
+             if (tt.getStatus() != null)
+                 updateStatusChoice.getSelectionModel().select(tt.getStatus());
+             else
+                 updateStatusChoice.getSelectionModel().clearSelection();
+             updateDescriptionText.setText("");
+             if (tt.getDescrption() != null)
+                 updateDescriptionText.setText(tt.getDescrption());
+             updateCreatedLabel.setText(sdf.format(tt.getCreated()));
+             updateTodoPane.setVisible(true);
         }
         else if (event.getButton().equals(MouseButton.PRIMARY)  && event.getClickCount() == 1) {
            // シングルクリック
@@ -163,9 +225,9 @@ public class FXMLController implements Initializable {
         todo.setTitle(title);
         todo.setDeadline(deadline);
         todo.setDescription(description);
-        httpRequest.create(todo);
-        setTabContents(t, todo);
-        setTabContents(todoTab, todo);
+        Todo created = httpRequest.create(todo);
+        setTabContents(t, created);
+        setTabContents(todoTab, created);
         
         titleText.setText("");
         descriptionText.setText("");
@@ -204,6 +266,7 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        updateStatusChoice.getItems().addAll("作業中", "あとちょい", "完了");
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
@@ -227,14 +290,17 @@ public class FXMLController implements Initializable {
             }
         }
         
+        todoTab.setText(todoTab.getText() + " (" + todos.size() + ")");
+        
         // カテゴリのタブの作成と、それぞれのtodoの作成
         if (categories != null) {
             for (Category category : categories) {
                 try {
-                    Tab t = getTab(category.getBody());
+                    
+                    List<Todo> catTodos = httpRequest.get(category.getId());
+                    Tab t = getTab(category.getBody() + " (" + catTodos.size() + ")" );
                     tabMap.put(t, category);
                     clockTabPane.getTabs().add(t);
-                    List<Todo> catTodos = httpRequest.get(category.getId());
                     AnchorPane ap = (AnchorPane) t.getContent();
                     for (Todo cTodo : catTodos) {
                         setTabContents(t, cTodo);
@@ -293,6 +359,12 @@ public class FXMLController implements Initializable {
         TableView<TableTodo> to = getSelectedTableView();
         int viewNum = to.getSelectionModel().getSelectedIndex();
         return to.getItems().get(viewNum);
+    }
+    
+    private void setSelectedTableTodo(TableTodo tt) {
+        TableView<TableTodo> to = getSelectedTableView();
+        int viewNum = to.getSelectionModel().getSelectedIndex();
+        to.getItems().set(viewNum, tt);
     }
 
 }
