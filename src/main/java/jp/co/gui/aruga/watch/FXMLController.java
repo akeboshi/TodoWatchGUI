@@ -29,6 +29,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import jp.co.gui.aruga.watch.entity.Category;
 import jp.co.gui.aruga.watch.entity.TableTodo;
@@ -84,19 +86,43 @@ public class FXMLController implements Initializable {
     Map<Tab, String> tabMap = new HashMap<>();
     
     @FXML
+    private void handleUpdateRequest(ActionEvent event) {
+    }
+    
+    @FXML
+    private void handleUpdateCancel(ActionEvent event) {
+    }
+    
+    @FXML
     private void handleCreateTodoButton(ActionEvent event) {
         createTodoPane.setVisible(true);
     }
+    
+    @FXML
+    private void todoViewClicked (MouseEvent event){
+         if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+           // ダブルクリック
+             System.out.println("double");
+             TableTodo tt = getSelectedTableTodo();
+        }
+        else if (event.getButton().equals(MouseButton.PRIMARY)  && event.getClickCount() == 1) {
+           // シングルクリック
+        }
+    }
+    
     @FXML
     private void handleDeleteTodoButton (ActionEvent event) throws IOException {
-        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
-        Tab t = clockTabPane.getTabs().get(tabNum);
-        AnchorPane ap = (AnchorPane) t.getContent();
-        TableView<TableTodo> to = (TableView<TableTodo>) ap.getChildren().get(0);
-        int viewNum = to.getSelectionModel().getSelectedIndex();
-        TableTodo tt = to.getItems().get(viewNum);
+
+        TableTodo tt = getSelectedTableTodo();
         httpRequest.delete(tt.getId());
-        to.getItems().remove(viewNum);
+        getSelectedTableView().getItems().remove(tt);
+        List<TableTodo> ltt = todoView.getItems();
+        for (TableTodo ltt1 : ltt) {
+            if (ltt1.getId().equals(tt.getId())){
+                todoView.getItems().remove(ltt1);
+                break;
+            }
+        }
     }
     
     @FXML
@@ -109,10 +135,8 @@ public class FXMLController implements Initializable {
             LocalDate ldt = deadlinePicker.getValue();
             deadline = new Date(ldt.getYear() - 1900, ldt.getMonthValue() - 1, ldt.getDayOfMonth());
         }
-        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
-        Tab t = clockTabPane.getTabs().get(tabNum);
+        Tab t = getSelectedTab();
         String categoryId = tabMap.get(t);
-        AnchorPane ap = (AnchorPane) t.getContent();
         Todo todo = new Todo();
         todo.setCategory(categoryId);
         todo.setTitle(title);
@@ -177,10 +201,7 @@ public class FXMLController implements Initializable {
         // すべてのtodoをセット
         if (todos != null) {
             for (Todo todo1 : todos) {
-                TableTodo todo = new TableTodo();
-                todo.setId(todo1.getId());
-                todo.setDescription(todo1.getDescription());
-                todo.setTitle(todo1.getTitle());
+                TableTodo todo = new TableTodo(todo1);
                 todoView.getItems().add(todo);
             }
         }
@@ -219,6 +240,9 @@ public class FXMLController implements Initializable {
         t.setText(title);
         AnchorPane ap = (AnchorPane) t.getContent();
         TableView<TableTodo> to = (TableView<TableTodo>) ap.getChildren().get(0);
+        to.setOnMouseClicked((MouseEvent event) -> {
+            todoViewClicked(event);
+        });
         to.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("title"));
         to.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("description"));
         return t;
@@ -227,10 +251,27 @@ public class FXMLController implements Initializable {
     private void setTabContents(Tab tab, Todo todo) {
         ObservableList<Tab> ol = clockTabPane.getTabs();
 
-        TableTodo tt = new TableTodo(todo.getId(), todo.getTitle(), todo.getDescription());
+        TableTodo tt = new TableTodo(todo);
         AnchorPane ap = (AnchorPane) tab.getContent();
         TableView<TableTodo> to = (TableView<TableTodo>) ap.getChildren().get(0);
         to.getItems().add(tt);
+    }
+    
+    private Tab getSelectedTab(){
+        int tabNum = clockTabPane.getSelectionModel().getSelectedIndex();
+        return clockTabPane.getTabs().get(tabNum); 
+    }
+    
+    private TableView<TableTodo> getSelectedTableView(){
+        Tab t = getSelectedTab();
+        AnchorPane ap = (AnchorPane) t.getContent();
+        return (TableView<TableTodo>) ap.getChildren().get(0); 
+    }
+    
+    private TableTodo getSelectedTableTodo() {
+        TableView<TableTodo> to = getSelectedTableView();
+        int viewNum = to.getSelectionModel().getSelectedIndex();
+        return to.getItems().get(viewNum);
     }
 
 }

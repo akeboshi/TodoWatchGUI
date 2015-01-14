@@ -16,7 +16,7 @@
             <content>
               <AnchorPane fx:id="todoPane" minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="487.0">
                      <children>
-                        <TableView id="0" fx:id="todoView" prefHeight="186.0" prefWidth="487.0">
+                        <TableView id="0" fx:id="todoView" onMouseClicked="#todoViewClicked" prefHeight="186.0" prefWidth="487.0">
                           <columns>
                             <TableColumn id="0" fx:id="titleColumn" prefWidth="114.0" resizable="false" text="Title" />
                             <TableColumn id="1" fx:id="descriptionColumn" prefWidth="372.0" text="Description" />
@@ -70,6 +70,24 @@
             <Button layoutX="25.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCreate" text="作成" />
             <Button layoutX="93.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleCategoryCancel" text="キャンセル" />
             <Label layoutX="25.0" layoutY="14.0" text="カテゴリ名" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="updateTodoPane" layoutX="29.0" layoutY="36.0" prefHeight="333.0" prefWidth="426.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
+         <children>
+            <Text layoutX="29.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="タイトル" />
+            <TextField fx:id="updateTitleText" layoutX="96.0" layoutY="63.0" />
+            <Text layoutX="29.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="詳細" />
+            <TextArea fx:id="updateDescriptionText" layoutX="29.0" layoutY="207.0" prefHeight="79.0" prefWidth="377.0" />
+            <Text layoutX="29.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="期限" />
+            <DatePicker fx:id="updateDeadlinePicker" layoutX="96.0" layoutY="97.0" />
+            <Button layoutX="74.0" layoutY="293.0" mnemonicParsing="false" onAction="#handleUpdateRequest" text="更新" />
+            <Button layoutX="257.0" layoutY="293.0" mnemonicParsing="false" onAction="#handleUpdateCancel" text="キャンセル" />
+            <Text layoutX="221.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="作成日時" />
+            <Text layoutX="288.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2015年12月31日" />
+            <Text layoutX="29.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カテゴリ" />
+            <Text layoutX="29.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="状態" />
+            <ChoiceBox fx:id="updateCategoryChoice" layoutX="97.0" layoutY="130.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="updateStatusChoice" layoutX="97.0" layoutY="162.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
     </children>

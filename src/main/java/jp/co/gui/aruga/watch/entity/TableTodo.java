@@ -5,6 +5,7 @@
  */
 package jp.co.gui.aruga.watch.entity;
 
+import java.util.Date;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,19 +14,42 @@ import javafx.beans.property.StringProperty;
  * @author akari
  */
 public class TableTodo {
+
     private String id;
     private StringProperty title;
     private StringProperty description;
-    
-    public TableTodo (){
+    // 優先度
+    private Integer level;
+    // category
+    private String category;
+    // 状態
+    private Integer status;
+    // 締め切り
+    private Date deadline;
+    // 作成日
+    private Date created;
+
+    private TableTodo() {
     }
-    
-    public TableTodo (String id, String title, String description){
+
+    public TableTodo(String id, String title, String description, Integer level,
+            String category, Integer status, Date deadline, Date created) {
         setId(id);
         setTitle(title);
         setDescription(description);
+        setLevel(level);
+        setCategory(category);
+        setStatus(status);
+        setDeadline(deadline);
+        setCreated(created);
     }
-    
+
+    public TableTodo(Todo todo) {
+        this(todo.getId(), todo.getTitle(),
+                todo.getDescription(), todo.getLevel(), todo.getCategory(),
+                todo.getStatus(), todo.getDeadline(), todo.getCreated());
+    }
+
     /**
      * @return the title
      */
@@ -36,7 +60,7 @@ public class TableTodo {
     /**
      * @param title the title to set
      */
-    public void setTitle(String title) {
+    private void setTitle(String title) {
         this.title = new SimpleStringProperty(title);
     }
 
@@ -50,7 +74,7 @@ public class TableTodo {
     /**
      * @param description the description to set
      */
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = new SimpleStringProperty(description);
     }
 
@@ -64,8 +88,78 @@ public class TableTodo {
     /**
      * @param id the id to set
      */
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * @return the level
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * @param level the level to set
+     */
+    private void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    /**
+     * @return the category
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    private void setCategory(String category) {
+        this.category = category;
+    }
+
+    /**
+     * @return the status
+     */
+    public Integer getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    private void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the deadline
+     */
+    public Date getDeadline() {
+        return deadline;
+    }
+
+    /**
+     * @param deadline the deadline to set
+     */
+    private void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
+
+    /**
+     * @return the created
+     */
+    public Date getCreated() {
+        return created;
+    }
+
+    /**
+     * @param created the created to set
+     */
+    private void setCreated(Date created) {
+        this.created = created;
     }
 
 }
