@@ -12,8 +12,8 @@
          <children>
             <TableView prefHeight="186.0" prefWidth="487.0">
                <columns>
-                  <TableColumn prefWidth="114.0" resizable="false" text="Title" />
-                  <TableColumn prefWidth="372.0" text="Description" />
+                  <TableColumn prefWidth="340.0" resizable="false" text="Title" />
+                  <TableColumn prefWidth="146.0" text="DeadLine" />
                </columns>
             </TableView>
          </children>

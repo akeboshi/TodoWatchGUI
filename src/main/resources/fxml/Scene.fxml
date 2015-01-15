@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,7 +10,6 @@
 
 <AnchorPane id="AnchorPane" prefHeight="374.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jp.co.gui.aruga.watch.FXMLController">
     <children>
-        <Label fx:id="label" layoutX="168.0" layoutY="74.0" minHeight="16" minWidth="56.0" prefHeight="36.0" prefWidth="95.0" />
       <TabPane fx:id="clockTabPane" layoutY="120.0" prefHeight="222.0" prefWidth="487.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="todoTab" text="すべて">
@@ -18,8 +18,8 @@
                      <children>
                         <TableView id="0" fx:id="todoView" onMouseClicked="#todoViewClicked" prefHeight="186.0" prefWidth="487.0">
                           <columns>
-                            <TableColumn id="0" fx:id="titleColumn" prefWidth="114.0" resizable="false" text="Title" />
-                            <TableColumn id="1" fx:id="descriptionColumn" prefWidth="372.0" text="Description" />
+                            <TableColumn id="0" fx:id="titleColumn" prefWidth="340.0" resizable="false" text="Title" />
+                            <TableColumn id="1" fx:id="deadlineColumn" prefWidth="146.0" text="DeadLine" />
                           </columns>
                         </TableView>
                      </children>
@@ -28,6 +28,10 @@
           </Tab>
         </tabs>
       </TabPane>
+      <Button layoutX="104.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleDeleteTodoButton" text="削除" />
+      <Button layoutX="34.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCreateTodoButton" text="作成" />
+      <Button layoutX="336.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCategoryButton" text="カテゴリ作成" />
+      <Rectangle fx:id="cover" arcHeight="5.0" arcWidth="5.0" fill="#0000007d" height="374.0" stroke="BLACK" strokeType="INSIDE" width="487.0" />
       <Label fx:id="date" layoutX="14.0" layoutY="14.0" text="2015年12月31日" />
       <Label fx:id="hour" layoutX="132.0" layoutY="40.0" text="23">
          <font>
@@ -49,9 +53,6 @@
             <Font size="19.0" />
          </font>
       </Label>
-      <Button layoutX="104.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleDeleteTodoButton" text="削除" />
-      <Button layoutX="34.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCreateTodoButton" text="作成" />
-      <Button layoutX="336.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCategoryButton" text="カテゴリ作成" />
       <AnchorPane fx:id="createTodoPane" layoutX="34.0" layoutY="168.0" prefHeight="200.0" prefWidth="415.0" style="-fx-border-color: black; -fx-background-color: white;" visible="false">
          <children>
             <Text layoutX="29.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="タイトル" />

@@ -5,6 +5,7 @@
  */
 package jp.co.gui.aruga.watch.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -28,6 +29,10 @@ public class TableTodo {
     private Date deadline;
     // 作成日
     private Date created;
+    // 締め切り string
+    private StringProperty deadlineString;
+
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy'年'MM'月'dd'日'");
 
     private TableTodo() {
     }
@@ -50,13 +55,20 @@ public class TableTodo {
                 todo.getStatus(), todo.getDeadline(), todo.getCreated());
     }
 
+    public StringProperty deadlineProperty() {
+            if (deadline != null)
+                return new SimpleStringProperty(sdf.format(deadline));
+            else
+                return new SimpleStringProperty("");
+     }
+
     /**
      * @return the title
      */
     public StringProperty titleProperty() {
         return title;
     }
-    
+
     public String getTitle() {
         return title.getValue();
     }
@@ -74,7 +86,7 @@ public class TableTodo {
     public StringProperty descriptionProperty() {
         return description;
     }
-    
+
     public String getDescrption() {
         return description.getValue();
     }
