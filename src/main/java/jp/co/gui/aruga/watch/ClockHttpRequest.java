@@ -31,7 +31,7 @@ import org.apache.http.util.EntityUtils;
  * @author akari
  */
 public class ClockHttpRequest {
-    final private String host = "localhost:8084";
+    final private String host = "54.65.21.152:8080";
     final private String dir = "TodoWatch";
     final private String url = "http://" + host + "/" + dir + "";
     final private String encode = "UTF-8";
