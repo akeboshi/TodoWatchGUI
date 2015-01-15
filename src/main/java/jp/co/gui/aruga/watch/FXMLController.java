@@ -129,7 +129,7 @@ public class FXMLController implements Initializable {
 
         TableTodo tt = getSelectedTableTodo();
         todo.setId(tt.getId());
-        todo.setLevel(updateStatusChoice.getSelectionModel().getSelectedIndex());
+        todo.setStatus(updateStatusChoice.getSelectionModel().getSelectedIndex());
         Category selectedCategory = updateCategoryChoice.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
             todo.setCategory(selectedCategory.getId());
