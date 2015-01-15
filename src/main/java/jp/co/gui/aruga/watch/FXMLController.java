@@ -319,13 +319,13 @@ public class FXMLController implements Initializable {
         String ct = categoryText.getText();
         Category ca = httpRequest.createCategory(ct);
         Tab t = getTab(categoryText.getText());
-        refreshTab(t);
         tabMap.put(t, ca);
         categoryMap.put(ca.getId(), t);
         clockTabPane.getTabs().add(t);
         categoryPane.setVisible(false);
         cover.setVisible(false);
         categoryText.setText("");
+        refreshTab(t);
     }
 
     @Override

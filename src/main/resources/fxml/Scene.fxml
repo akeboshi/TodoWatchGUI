@@ -18,7 +18,7 @@
                      <children>
                         <TableView id="0" fx:id="todoView" onMouseClicked="#todoViewClicked" prefHeight="186.0" prefWidth="487.0">
                           <columns>
-                            <TableColumn id="0" fx:id="titleColumn" prefWidth="340.0" resizable="false" text="Title" />
+                            <TableColumn id="0" fx:id="titleColumn" prefWidth="340.0" text="Title" />
                             <TableColumn id="1" fx:id="deadlineColumn" prefWidth="146.0" text="DeadLine" />
                           </columns>
                         </TableView>
@@ -31,7 +31,7 @@
       <Button layoutX="104.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleDeleteTodoButton" text="削除" />
       <Button layoutX="34.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCreateTodoButton" text="作成" />
       <Button layoutX="336.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleCategoryButton" text="カテゴリ作成" />
-      <Rectangle fx:id="cover" arcHeight="5.0" arcWidth="5.0" fill="#0000007d" height="374.0" stroke="BLACK" strokeType="INSIDE" width="487.0" />
+      <Rectangle fx:id="cover" arcHeight="5.0" arcWidth="5.0" fill="#0000007d" height="374.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="487.0" />
       <Label fx:id="date" layoutX="14.0" layoutY="14.0" text="2015年12月31日" />
       <Label fx:id="hour" layoutX="132.0" layoutY="40.0" text="23">
          <font>
